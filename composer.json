@@ -1,0 +1,62 @@
+{
+    "name": "enadstack/laravel-api-contracts",
+    "description": "Shared versioned commerce contracts for event schemas, API conventions, money DTOs, reference formats, error envelopes, pagination, and integration standards.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^13.0",
+        "illuminate/http": "^13.0",
+        "illuminate/pagination": "^13.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "phpunit/phpunit": "^12.5",
+        "laravel/pint": "^1.27"
+    },
+    "autoload": {
+        "psr-4": {
+            "Enadstack\\ApiContracts\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Enadstack\\ApiContracts\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Enadstack\\ApiContracts\\ApiContractsServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-main": "1.x-dev"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "keywords": [
+        "laravel",
+        "commerce",
+        "contracts",
+        "api",
+        "microservices",
+        "json-api",
+        "error-envelope"
+    ],
+    "homepage": "https://github.com/Enadabuzaid/laravel-api-contracts",
+    "authors": [
+        {
+            "name": "Enad Abuzaid",
+            "email": "enad.abuzaid15@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Enadabuzaid/laravel-api-contracts/issues",
+        "source": "https://github.com/Enadabuzaid/laravel-api-contracts"
+    }
+}
