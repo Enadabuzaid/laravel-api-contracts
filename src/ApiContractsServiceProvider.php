@@ -17,6 +17,12 @@ class ApiContractsServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/api-contracts.php' => config_path('api-contracts.php'),
             ], 'api-contracts-config');
+
+            $this->publishes([
+                __DIR__.'/../database/migrations/create_idempotency_keys_table.php.stub' => database_path('migrations/'.date('Y_m_d_His').'_create_idempotency_keys_table.php'),
+            ], 'api-contracts-migrations');
         }
+
+        $this->app['router']->aliasMiddleware('idempotency', Http\Middleware\Idempotency::class);
     }
 }
