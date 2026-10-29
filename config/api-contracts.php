@@ -22,4 +22,18 @@ return [
         'server_error_code' => 'SERVER_ERROR',
     ],
 
+    /*
+    | Idempotency: how long a stored response is replayed (seconds).
+    */
+    'idempotency' => [
+        'ttl' => 86400,
+    ],
+
+    /*
+    | Webhooks: max accepted clock skew for signed deliveries (seconds).
+    */
+    'webhooks' => [
+        'tolerance' => 300,
+    ],
+
 ];
