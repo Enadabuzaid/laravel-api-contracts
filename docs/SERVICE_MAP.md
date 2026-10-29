@@ -14,12 +14,20 @@ Boost and `/up`, unless noted.
 **Projects:** Sof = Sofrito, Taf = Tafadel, Ake = Akefak (later), Souq = Souqna.
 "uses" = calls it today; "should" = planned fit.
 
+## Founder decisions (2026-10-30)
+
+- **A** Apps connect via one `laravel-service-client` base + one `<name>-client` per service ([CONNECTING.md](CONNECTING.md)).
+- **B** Order: contracts v2 (service auth, idempotency, outbox, fakes) → identity-access → notification → loyalty.
+- **C** Customer profiles and tenants stay **in-app** for Tafadel; customer-profile-service and platform-management-service come later.
+- **D** `commerce-contracts` and souqna-* stay in `repos.yaml`, marked `note: not on this machine`.
+- **Web push** Tafadel keeps web push (VAPID) **in-app** (free, fast step of the alert chain). notification-service covers the paid SMS/WhatsApp backup now; a push adapter is a later gap.
+
 ## First three to bring up to standard
 
 | # | Service | Why |
 |---|---|---|
 | 1 | **identity-access-service** | Issuer of service-account keys; everything else depends on it. Sofrito already uses it. |
-| 2 | **notification-service** | Tafadel needs SMS/WhatsApp/push backup for "order ready"; Twilio + Meta WhatsApp adapters exist. |
+| 2 | **notification-service** | Tafadel needs the paid SMS/WhatsApp backup for "order ready" (web push stays in-app); Twilio + Meta WhatsApp adapters exist. |
 | 3 | **loyalty-service** | Tafadel + Sofrito loyalty; richest domain API (30 routes) but has its own `X-API-Key` auth and only 8 feature tests. |
 
 ## All services
@@ -27,7 +35,7 @@ Boost and `/up`, unless noted.
 | Service | Status | Routes / feature tests | Gaps vs standard (beyond common) | Uses / should use |
 |---|---|---|---|---|
 | identity-access-service | partial | 90 / 71 | Uses contracts v1. Needs: introspect returns `application` + `tenant_reference`; `identity:service-account:create` command; no `Idempotency-Key` on writes; root `fix_*.php` scripts | uses: Sof · should: Taf, Ake, every service (auth) |
-| notification-service | partial | 9 / 18 | Own `NotificationServiceAccount` bearer tokens → switch to identity keys; no contracts envelope; no idempotency; channel/tenant not persisted; no push (FCM) adapter seen; no outbox events for delivered/failed | should: Taf (backup alerts), Sof, Ake |
+| notification-service | partial | 9 / 18 | Own `NotificationServiceAccount` bearer tokens → switch to identity keys; no contracts envelope; no idempotency; channel/tenant not persisted; no push adapter (later gap; Tafadel web push is in-app); no outbox events for delivered/failed | should: Taf (backup alerts), Sof, Ake |
 | loyalty-service | partial | 30 / 8 | Own `X-API-Key` clients → identity keys; no contracts envelope; tests far below 1-per-endpoint; idempotency present on some writes (verify all) | should: Taf, Sof |
 | platform-management-service | partial | 24 / 1 | No contracts; 1 feature test | should: Souq; maybe Taf/Sof for tenants/plans (decision needed) |
 | items-content-service | partial | 18 / 32 | No contracts; no idempotency | should: Souq |
@@ -61,9 +69,9 @@ Boost and `/up`, unless noted.
 
 | Repo | Note |
 |---|---|
-| commerce-contracts | Listed in repos.yaml but missing on disk; superseded by `laravel-api-contracts` (this repo). Remove from repos.yaml. |
+| commerce-contracts | Missing on disk; superseded by `laravel-api-contracts` (this repo). Kept in repos.yaml as `note: not on this machine`. |
 | souqna-marketplace-service | Folder exists, empty. Souqna-only → app-specific, not a Lego service. |
-| souqna-commerce-bff, souqna-frontends, souqna-e2e-tests, souqna-deployment | Souqna app/infra repos, empty on disk. |
+| souqna-commerce-bff, souqna-frontends, souqna-e2e-tests, souqna-deployment | Souqna app/infra repos, not on this machine (marked in repos.yaml). |
 
 ## Shared building blocks still missing
 

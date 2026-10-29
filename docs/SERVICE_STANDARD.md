@@ -14,7 +14,7 @@ How an app plugs in: [CONNECTING.md](CONNECTING.md). Current state of each servi
 | Reusable code, no data of its own (helpers, UI, DTOs, contracts) | **Package** in `~/Herd/packages/*` |
 | Own data **and** used by 2+ projects, or heavy domain (identity, notifications, payments, loyalty) | **Service** in `~/Herd/<domain>-service` |
 | Used by one project only | **In the app** |
-| Latency-critical, user waiting on screen (< 3 s), e.g. Tafadel "Ready → alert" page alert | **In the app**; a service may do the backup path (SMS/WhatsApp/push) |
+| Latency-critical, user waiting on screen (< 3 s), e.g. Tafadel "Ready → alert" page alert | **In the app**; a service may do the paid backup path (SMS/WhatsApp); Tafadel web push (VAPID) stays in-app |
 
 Example: Tafadel's live "order ready" alert is a broadcast inside the app. The
 backup SMS/WhatsApp goes through `notification-service`.
