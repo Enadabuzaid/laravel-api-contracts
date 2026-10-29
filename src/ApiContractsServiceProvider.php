@@ -20,7 +20,10 @@ class ApiContractsServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../database/migrations/create_idempotency_keys_table.php.stub' => database_path('migrations/'.date('Y_m_d_His').'_create_idempotency_keys_table.php'),
+                __DIR__.'/../database/migrations/create_outbox_events_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time() + 1).'_create_outbox_events_table.php'),
             ], 'api-contracts-migrations');
+
+            $this->commands([Console\ProcessOutboxCommand::class]);
         }
 
         $this->app['router']->aliasMiddleware('idempotency', Http\Middleware\Idempotency::class);

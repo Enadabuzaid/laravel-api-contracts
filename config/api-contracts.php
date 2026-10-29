@@ -36,4 +36,18 @@ return [
         'tolerance' => 300,
     ],
 
+    /*
+    | Outbox (SERVICE_STANDARD §6). Subscriptions are webhook targets:
+    | ['url' => ..., 'secret' => ..., 'events' => ['loyalty.*']] ('*' = all).
+    | Backoff is base * 2^(attempt-1) seconds, capped at backoff_max.
+    */
+    'outbox' => [
+        'subscriptions' => [],
+        'max_attempts' => 8,
+        'backoff_base' => 30,
+        'backoff_max' => 3600,
+        'batch' => 100,
+        'timeout' => 10,
+    ],
+
 ];

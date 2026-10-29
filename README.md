@@ -90,3 +90,22 @@ $event = EventEnvelope::make('loyalty.points.earned', 'loyalty-service', 'tafade
 json_encode($event);                     // {id,type,version,producer,application,tenant_reference,occurred_at,data}
 EventEnvelope::fromArray($payload);      // consumer side
 ```
+
+**Transactional outbox** — events commit with your data, a scheduled command delivers them:
+
+```php
+DB::transaction(function () use ($order) {
+    $order->save();
+    app(RecordOutboxEvent::class)->handle(EventEnvelope::make('order.order.placed', 'order-service', $app, $tenant, [...]));
+});
+```
+
+```php
+// config/api-contracts.php → outbox.subscriptions
+['url' => 'https://app.test/hooks', 'secret' => '…', 'events' => ['order.*']]
+```
+
+Publish the migration (`api-contracts-migrations`) and schedule `outbox:process`
+every minute. Each delivery is a signed webhook (`X-Webhook-Id` = event id). Failures
+retry with backoff `base * 2^(attempt-1)` (`backoff_base` 30 s, `backoff_max` 3600 s) until
+`max_attempts` (8), then the row is `failed`. Delivery is at-least-once; receivers dedupe on `X-Webhook-Id`.
