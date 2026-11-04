@@ -26,6 +26,9 @@ class ApiContractsServiceProvider extends ServiceProvider
             $this->commands([Console\ProcessOutboxCommand::class]);
         }
 
-        $this->app['router']->aliasMiddleware('idempotency', Http\Middleware\Idempotency::class);
+        $router = $this->app['router'];
+        $router->aliasMiddleware('idempotency', Http\Middleware\Idempotency::class);
+        $router->aliasMiddleware('service.auth', Http\Middleware\ServiceAuth::class);
+        $router->aliasMiddleware('service.scope', Http\Middleware\ServiceScope::class);
     }
 }
