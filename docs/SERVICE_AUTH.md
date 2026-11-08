@@ -46,6 +46,22 @@ Reads add `WHERE tenant_reference = ? AND application = ?`; with no context they
 Explicit opt-out: `Model::withoutGlobalScope(TenantScope::class)`.
 Queue jobs/console/tests: `TenantContext::within('sofrito:tenant:1', 'sofrito', fn () => ...)`.
 
+### Event-bypass gap
+
+`HasTenantReference` fills and checks `tenant_reference` and `application` in its `creating` model event. Any write
+that skips model events skips that hook, so the tenant guard does not run for it. This covers:
+
+- `saveQuietly()` and `withoutEvents(...)`
+- the `WithoutModelEvents` trait (seeders, factories, tests)
+- `insert()` and other query-builder writes, which never raise model events
+
+The global read scope still applies to reads, but a bypassed write can store a `tenant_reference` or `application`
+that does not match the active `TenantContext`. Consuming services must not use these paths for tenant models.
+Their own tests or CI should enforce that (for example with an architecture test). Preferring
+`Model::create()` / `save()` inside `TenantContext::within(...)` is the supported way to write.
+
+This is a documentation note only. The package does not change its behaviour, and no code enforces it here.
+
 ## Config
 
 | Key | Default |
